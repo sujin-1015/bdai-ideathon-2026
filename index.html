@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인게이지먼트 넛지 시스템</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg-page:      #f9f9f7;
+    --surface:      #fcfcfb;
+    --surface-2:    #f2f1ec;
+    --text-primary: #0b0b0b;
+    --text-secondary:#52514e;
+    --text-muted:   #898781;
+    --border:       rgba(11,11,11,0.10);
+    --border-strong:rgba(11,11,11,0.16);
+    --accent:       #2a78d6;
+    --accent-ink:   #ffffff;
+    --accent-soft:  #e8f1fc;
+    --accent-soft-border: #bcd7f5;
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+    --good:     #0ca30c;
+    --warning:  #fab219;
+    --serious:  #ec835a;
+    --critical: #d03b3b;
+    --critical-soft: #fbe9e8;
+    --critical-soft-border: #f0bcba;
+    --grid:     #e1e0d9;
+    --baseline: #c3c2b7;
+    --shadow: 0 1px 2px rgba(11,11,11,0.04), 0 8px 24px -12px rgba(11,11,11,0.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg-page:      #0d0d0d;
+      --surface:      #1a1a19;
+      --surface-2:    #222220;
+      --text-primary: #ffffff;
+      --text-secondary:#c3c2b7;
+      --text-muted:   #898781;
+      --border:       rgba(255,255,255,0.10);
+      --border-strong:rgba(255,255,255,0.18);
+      --accent:       #3987e5;
+      --accent-ink:   #ffffff;
+      --accent-soft:  #16283d;
+      --accent-soft-border: #2c4a6e;
+      --series-1: #3987e5;
+      --series-2: #d95926;
+      --series-3: #199e70;
+      --series-4: #c98500;
+      --good:     #0ca30c;
+      --warning:  #fab219;
+      --serious:  #ec835a;
+      --critical: #e66767;
+      --critical-soft: #3a1d1c;
+      --critical-soft-border: #5c2e2b;
+      --grid:     #2c2c2a;
+      --baseline: #383835;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-page:      #0d0d0d;
+    --surface:      #1a1a19;
+    --surface-2:    #222220;
+    --text-primary: #ffffff;
+    --text-secondary:#c3c2b7;
+    --text-muted:   #898781;
+    --border:       rgba(255,255,255,0.10);
+    --border-strong:rgba(255,255,255,0.18);
+    --accent:       #3987e5;
+    --accent-ink:   #ffffff;
+    --accent-soft:  #16283d;
+    --accent-soft-border: #2c4a6e;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --good:     #0ca30c;
+    --warning:  #fab219;
+    --serious:  #ec835a;
+    --critical: #e66767;
+    --critical-soft: #3a1d1c;
+    --critical-soft-border: #5c2e2b;
+    --grid:     #2c2c2a;
+    --baseline: #383835;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 0; min-height: 100%; }
+  h1, h2, h3, h4 { text-wrap: balance; margin: 0; font-weight: 700; }
+  p { margin: 0; }
+  button { font-family: inherit; }
+
+  .shell {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 20px 20px 64px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 2px 18px;
+  }
+  .masthead .eyebrow {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .masthead h1 { font-size: 21px; letter-spacing: -0.01em; }
+  .masthead .sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    max-width: 62ch;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabbar {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+    overflow-x: auto;
+  }
+  .tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 10px 14px 11px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: color .15s ease;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab[aria-selected="true"] {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent);
+  }
+  .tab .n {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: viewIn .28s ease; }
+  @media (prefers-reduced-motion: reduce) { .view.active { animation: none; } }
+  @keyframes viewIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---------- device frame (user-facing screens) ---------- */
+  .device {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .device-chrome {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .chrome-dots { display: flex; gap: 6px; }
+  .chrome-dots span {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .chrome-url {
+    flex: 1;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .device-body { padding: 26px 28px 30px; }
+
+  .page-kicker { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+  .page-title { font-size: 19px; font-weight: 700; margin-bottom: 20px; }
+
+  .report-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .report-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  .report-row .rt { font-size: 13.5px; font-weight: 600; }
+  .report-row .rd { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .report-row .chip {
+    font-size: 11px; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 3px 9px; white-space: nowrap;
+  }
+
+  /* simulation control strip */
+  .sim-strip {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .sim-strip .lbl { flex-shrink: 0; font-weight: 600; color: var(--text-primary); }
+  .sim-track {
+    flex: 1; height: 4px; border-radius: 999px;
+    background: var(--grid); position: relative; overflow: hidden;
+  }
+  .sim-fill {
+    position: absolute; inset: 0 auto 0 0; width: 0%;
+    background: var(--accent); border-radius: 999px;
+    transition: width 3s linear;
+  }
+  .sim-replay {
+    appearance: none; border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--text-primary);
+    font-size: 12px; font-weight: 600; border-radius: 7px;
+    padding: 6px 10px; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sim-replay:hover { background: var(--surface-2); }
+
+  /* nudge highlight card */
+  .nudge-card {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 18px;
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity .45s ease, transform .45s ease;
+    margin-bottom: 4px;
+  }
+  .nudge-card.show { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .nudge-card { transition: none; } }
+  .nudge-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .nudge-tag {
+    display: inline-block; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .03em; color: var(--accent);
+    background: var(--surface); border: 1px solid var(--accent-soft-border);
+    border-radius: 999px; padding: 2px 8px; margin-bottom: 6px;
+  }
+  .nudge-card h4 { font-size: 14px; margin-bottom: 5px; }
+  .nudge-card p { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
+  .nudge-cta {
+    margin-top: 10px; appearance: none; border: none;
+    background: var(--accent); color: var(--accent-ink);
+    font-size: 12.5px; font-weight: 700; border-radius: 7px;
+    padding: 7px 13px; cursor: pointer;
+  }
+  .nudge-cta:hover { filter: brightness(1.08); }
+
+  .trigger-note {
+    margin-top: 14px; font-size: 11.5px; color: var(--text-muted);
+    display: flex; gap: 7px; align-items: flex-start; line-height: 1.6;
+  }
+  .trigger-note b { color: var(--text-secondary); font-weight: 600; }
+
+  /* ---------- login view ---------- */
+  .login-wrap { display: flex; justify-content: center; padding: 10px 0 6px; }
+  .login-card {
+    width: 100%; max-width: 300px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .login-card .lg-title { font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 2px; }
+  .login-card label { font-size: 11.5px; color: var(--text-secondary); font-weight: 600; }
+  .login-card input {
+    width: 100%; margin-top: 5px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--surface); color: var(--text-primary);
+    padding: 9px 11px; font-size: 13px;
+  }
+  .login-submit {
+    margin-top: 6px; appearance: none; border: none;
+    background: var(--accent); color: var(--accent-ink);
+    font-weight: 700; font-size: 13.5px; border-radius: 8px;
+    padding: 10px; cursor: pointer;
+  }
+  .login-submit:hover { filter: brightness(1.08); }
+  .login-hint { text-align: center; font-size: 11.5px; color: var(--text-muted); }
+
+  /* modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(11,11,11,0.45);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 50;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal {
+    width: 100%; max-width: 380px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; box-shadow: var(--shadow);
+    padding: 22px 22px 20px;
+    transform: translateY(10px) scale(.98); transition: transform .25s ease;
+  }
+  .modal-overlay.show .modal { transform: translateY(0) scale(1); }
+  @media (prefers-reduced-motion: reduce) { .modal-overlay, .modal { transition: none; } }
+  .modal h3 { font-size: 16px; margin-bottom: 3px; }
+  .modal .modal-sub { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 16px; }
+  .stat-mini-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .stat-mini {
+    flex: 1; border: 1px solid var(--border); border-radius: 9px;
+    padding: 10px 10px; background: var(--surface-2);
+  }
+  .stat-mini .k { font-size: 10.5px; color: var(--text-muted); margin-bottom: 3px; }
+  .stat-mini .v { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .reco-title { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
+  .reco-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+  .reco-item {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 12.5px; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .reco-item .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--series-1); }
+  .reco-item:nth-child(2) .dot { background: var(--series-3); }
+  .reco-item:nth-child(3) .dot { background: var(--series-4); }
+  .modal-actions { display: flex; gap: 8px; }
+  .modal-actions button {
+    flex: 1; appearance: none; border-radius: 8px; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  }
+  .btn-primary { border: none; background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { border: 1px solid var(--border-strong); background: transparent; color: var(--text-secondary); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .modal-note {
+    margin-top: 14px; font-size: 11px; color: var(--text-muted); line-height: 1.6;
+  }
+
+  /* ---------- dashboard ---------- */
+  .dash-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .dash-head h2 { font-size: 17px; }
+  .dash-range { font-size: 11.5px; color: var(--text-muted); }
+
+  .alert-banner {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--critical-soft); border: 1px solid var(--critical-soft-border);
+    border-radius: 11px; padding: 12px 15px; margin-bottom: 18px;
+  }
+  .alert-banner .ic {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    background: var(--critical); color: #fff; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+  }
+  .alert-banner .txt { font-size: 12.5px; line-height: 1.55; }
+  .alert-banner .txt b { font-weight: 700; }
+  .alert-banner .rule-chip {
+    display: inline-flex; align-items: center; margin-top: 6px;
+    font-size: 10.5px; font-weight: 700; color: var(--critical);
+    border: 1px solid var(--critical-soft-border); border-radius: 999px;
+    padding: 2px 8px; background: var(--surface);
+  }
+
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 720px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 11px; padding: 13px 14px;
+  }
+  .stat-card .k { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
+  .stat-card .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .stat-card .d { font-size: 11px; margin-top: 4px; color: var(--text-secondary); }
+  .stat-card .d.down { color: var(--critical); font-weight: 700; }
+  .stat-card .d.flat { color: var(--text-muted); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 13px; padding: 18px 20px 16px;
+    margin-bottom: 16px;
+  }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .card-head h3 { font-size: 13.5px; font-weight: 700; }
+  .card-head .card-cap { font-size: 11px; color: var(--text-muted); }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+  .legend .li { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-secondary); }
+  .legend .sw { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .legend .ln { width: 12px; height: 2px; border-radius: 2px; flex-shrink: 0; }
+
+  details.tbl-toggle { margin-top: 10px; }
+  details.tbl-toggle > summary {
+    font-size: 11.5px; color: var(--accent); cursor: pointer; font-weight: 600;
+    list-style: none; display: inline-flex; align-items: center; gap: 4px;
+  }
+  details.tbl-toggle > summary::-webkit-details-marker { display: none; }
+  details.tbl-toggle > summary::before { content: "▸"; font-size: 10px; }
+  details.tbl-toggle[open] > summary::before { content: "▾"; }
+  .data-table { width: 100%; overflow-x: auto; margin-top: 10px; }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .data-table th, .data-table td {
+    text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .data-table th:first-child, .data-table td:first-child { text-align: left; }
+  .data-table th { color: var(--text-muted); font-weight: 600; }
+
+  /* dumbbell / range chart */
+  .dumbbell { display: flex; flex-direction: column; gap: 14px; }
+  .db-row { display: grid; grid-template-columns: 128px 1fr; gap: 12px; align-items: center; }
+  .db-label { text-align: right; }
+  .db-label .fn { font-size: 12.5px; font-weight: 600; }
+  .db-label .mo { font-size: 10.5px; color: var(--text-muted); }
+  .db-track {
+    position: relative; height: 20px;
+    background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px);
+    background-size: 25% 100%;
+  }
+  .db-line {
+    position: absolute; top: 50%; height: 2px; background: var(--baseline);
+    transform: translateY(-50%); border-radius: 2px;
+  }
+  .db-dot {
+    position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%;
+    transform: translate(-50%, -50%); border: 2px solid var(--surface);
+  }
+  .db-dot.from { background: var(--text-muted); }
+  .db-dot.to { background: var(--accent); }
+  .db-dot.crit { background: var(--critical); }
+  .db-band {
+    position: absolute; top: 50%; height: 8px; border-radius: 5px;
+    transform: translateY(-50%); background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+  }
+  .db-delta { font-size: 11px; font-weight: 700; margin-left: 4px; white-space: nowrap; }
+  .db-delta.bad { color: var(--critical); }
+  .db-delta.good { color: var(--good); }
+  .db-delta.flat { color: var(--text-muted); font-weight: 600; }
+  .db-flagchip {
+    font-size: 9.5px; font-weight: 700; color: var(--critical);
+    border: 1px solid var(--critical-soft-border); background: var(--critical-soft);
+    border-radius: 999px; padding: 1px 6px; margin-left: 6px;
+  }
+  .axis-ticks {
+    display: grid; grid-template-columns: 128px 1fr; gap: 12px; margin-top: 2px;
+  }
+  .axis-ticks .tk-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); }
+
+  /* stacked bar */
+  .stack-chart { display: flex; flex-direction: column; gap: 12px; }
+  .stack-row { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; }
+  .stack-row .mo-lbl { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .stack-bar { display: flex; height: 26px; border-radius: 6px; overflow: hidden; }
+  .stack-seg { display: flex; align-items: center; justify-content: center; position: relative; }
+  .stack-seg + .stack-seg { border-left: 2px solid var(--surface); }
+  .stack-seg .seg-label { font-size: 10.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,0.15); }
+
+  /* line small multiples */
+  .line-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 620px) { .line-grid { grid-template-columns: 1fr; } }
+  .line-chart-title { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+  .line-svg-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+  /* automation rules */
+  .rule-list { display: flex; flex-direction: column; gap: 10px; }
+  .rule-row {
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px;
+  }
+  .rule-row .rn {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    background: var(--surface-2); border: 1px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text-secondary);
+  }
+  .rule-row .rt { flex: 1; font-size: 12.5px; line-height: 1.5; }
+  .rule-row .rt b { font-weight: 600; }
+  .toggle {
+    width: 34px; height: 20px; border-radius: 999px; flex-shrink: 0;
+    background: var(--good); position: relative;
+  }
+  .toggle::after {
+    content: ""; position: absolute; top: 2px; right: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: #fff;
+  }
+  .toggle-lbl { font-size: 10.5px; font-weight: 700; color: var(--good); flex-shrink: 0; width: 34px; text-align: center; }
+
+  .foot-note {
+    font-size: 11px; color: var(--text-muted); line-height: 1.7;
+    padding-top: 6px; border-top: 1px solid var(--border); margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="masthead">
+    <div class="eyebrow">BDAI LMS 활성화 아이디어톤 · 인터랙티브 프로토타입</div>
+    <h1>저빈도·이탈 사용자 재참여를 위한 AI 인게이지먼트 넛지 시스템</h1>
+    <p class="sub">제안서에 설계된 4개 기능 중 핵심 3가지 — 이탈 감지 하이라이트 카드, 저빈도 사용자 리마인더, 운영진용 참여 대시보드 — 를 실제 화면 흐름으로 구현했습니다. 대시보드 수치는 「BDAI_LMS_활성화_아이디어톤_데이터_참고자료.pdf」(2026.4.5–7.24, 4·7월은 부분 기간) 기준입니다.</p>
+  </div>
+
+  <div class="tabbar" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-view="report"><span class="n">01</span> 리포트 페이지 · 이탈 감지 카드</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="login"><span class="n">02</span> 로그인 · 저빈도 리마인더</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="dashboard"><span class="n">03</span> 운영진 대시보드</button>
+  </div>
+
+  <!-- ============ VIEW 1: REPORT PAGE ============ -->
+  <section class="view active" id="view-report">
+    <div class="sim-strip">
+      <span class="lbl" id="sim-status">시뮬레이션 · page_view 발생 → 10초 경과 대기 중</span>
+      <div class="sim-track"><div class="sim-fill" id="sim-fill"></div></div>
+      <button class="sim-replay" id="sim-replay">🔁 다시 보기</button>
+    </div>
+
+    <div class="device">
+      <div class="device-chrome">
+        <div class="chrome-dots"><span></span><span></span><span></span></div>
+        <div class="chrome-url">bdai.co.kr/knock/?tab=report</div>
+      </div>
+      <div class="device-body">
+        <div class="page-kicker">학회 활동 리포트</div>
+        <div class="page-title">리포트</div>
+
+        <div class="nudge-card" id="nudge-card">
+          <div class="nudge-icon">📊</div>
+          <div>
+            <span class="nudge-tag">자동 감지 · AI 넛지</span>
+            <h4>이 리포트, 핵심만 10초 요약</h4>
+            <p>최근 리포트 페이지에서 화면을 실제로 읽는 방문자 비율이 41%까지 낮아졌어요(4월 약 90% → 7월 약 41%). 지금 보고 계신 리포트의 핵심 지표만 먼저 확인해보세요.</p>
+            <button class="nudge-cta">핵심 요약 보기</button>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="report-list">
+          <div class="report-row">
+            <div>
+              <div class="rt">2026년 8월 3주차 학습 리포트</div>
+              <div class="rd">2026.08.16 업데이트</div>
+            </div>
+            <span class="chip">방문함</span>
+          </div>
+          <div class="report-row">
+            <div>
+              <div class="rt">정규반 7월 활동 리포트</div>
+              <div class="rd">2026.07.31 업데이트</div>
+            </div>
+            <span class="chip">방문함</span>
+          </div>
+          <div class="report-row">
+            <div>
+              <div class="rt">Learning 콘텐츠 이용 리포트</div>
+              <div class="rd">2026.07.20 업데이트</div>
+            </div>
+            <span class="chip">방문함</span>
+          </div>
+        </div>
+
+        <div class="trigger-note">
+          <span>⚙</span>
+          <span><b>트리거 조건</b> — 리포트/Knock 진입 후 page_view 발생, 10초 이내 user_engagement 누적 시간이 임계값 미만이면 카드 자동 노출. (데모에서는 10초를 3초로 압축해 표현했습니다.)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW 2: LOGIN REMINDER ============ -->
+  <section class="view" id="view-login">
+    <div class="device">
+      <div class="device-chrome">
+        <div class="chrome-dots"><span></span><span></span><span></span></div>
+        <div class="chrome-url">bdai.co.kr/accounts/login/</div>
+      </div>
+      <div class="device-body">
+        <div class="login-wrap">
+          <div class="login-card">
+            <div class="lg-title">BDAI LMS 로그인</div>
+            <div>
+              <label>이메일</label>
+              <input type="text" value="member@bdai.co.kr" readonly />
+            </div>
+            <div>
+              <label>비밀번호</label>
+              <input type="password" value="••••••••" readonly />
+            </div>
+            <button class="login-submit" id="login-btn">로그인</button>
+            <div class="login-hint">아래 버튼을 눌러 저빈도 사용자 로그인을 시뮬레이션합니다</div>
+          </div>
+        </div>
+
+        <div class="trigger-note" style="margin-top:22px;">
+          <span>⚙</span>
+          <span><b>트리거 조건</b> — 직전 월 세션 수가 1회였던 사용자(세그먼트 A, 매달 약 28~32%)가 로그인하면 개인화 리마인더를 1회 노출.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h3>다시 오신 걸 환영해요 👋</h3>
+      <div class="modal-sub">회원님, 지난달 활동을 요약해드릴게요</div>
+
+      <div class="stat-mini-row">
+        <div class="stat-mini">
+          <div class="k">지난달 세션 수</div>
+          <div class="v">1회</div>
+        </div>
+        <div class="stat-mini">
+          <div class="k">지난달 참여 시간</div>
+          <div class="v">2분</div>
+        </div>
+      </div>
+
+      <div class="reco-title">이번 달 추천 콘텐츠</div>
+      <div class="reco-list">
+        <div class="reco-item"><span class="dot"></span> Learning 신규 강의 오픈 — 7월 참여 1,181명</div>
+        <div class="reco-item"><span class="dot"></span> 커뮤니티 인기글 모음 보기</div>
+        <div class="reco-item"><span class="dot"></span> 정규반 이번 달 일정 안내</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" id="modal-confirm">지금 확인하기</button>
+        <button class="btn-ghost" id="modal-dismiss">다음에 보기</button>
+      </div>
+
+      <div class="modal-note">* '지난달 세션 수·참여 시간'은 세그먼트 A(월 1회 세션 사용자)에 해당하는 예시 사용자 값이며, 실제 값은 로그인한 사용자별로 개인화되어 계산됩니다.</div>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 3: ADMIN DASHBOARD ============ -->
+  <section class="view" id="view-dashboard">
+    <div class="dash-head">
+      <h2>회원 유형별 · 기능별 참여 대시보드</h2>
+      <span class="dash-range">데이터 기간 2026.4.5–7.24 (4월·7월은 부분 기간)</span>
+    </div>
+
+    <div class="alert-banner">
+      <div class="ic">!</div>
+      <div class="txt">
+        <div><b>자동 감지</b> — 리포트 참여 사용자 비율이 4월 약 90%에서 7월 약 41%까지 지속 하락, 누적 <b>49%p</b> 하락폭을 기록했습니다.</div>
+        <span class="rule-chip">규칙③ 기능 참여율 급락 감지 — 전월 대비 10%p 이상 하락 시 경고</span>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="k">전체 회원</div>
+        <div class="v">4,216명</div>
+        <div class="d">정규 1,401 · 일반 81 · MOU 218 · 비학회원 2,516</div>
+      </div>
+      <div class="stat-card">
+        <div class="k">7월 월 1회 세션 사용자</div>
+        <div class="v">28.6%</div>
+        <div class="d flat">저빈도 이탈 위험군 · 매달 28~32% 고정적</div>
+      </div>
+      <div class="stat-card">
+        <div class="k">리포트 참여 사용자 비율</div>
+        <div class="v">41%</div>
+        <div class="d down">▼ 49%p (4월 약 90% 대비)</div>
+      </div>
+      <div class="stat-card">
+        <div class="k">Knock 참여 사용자 비율</div>
+        <div class="v">50–61%</div>
+        <div class="d flat">5월 이후 동일 범위 유지</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>기능별 참여 사용자 비율 변화</h3>
+        <span class="card-cap">참여율 = user_engagement 발생자 ÷ page_view 발생자 × 100</span>
+      </div>
+      <div class="legend">
+        <span class="li"><span class="ln" style="background:var(--baseline)"></span>이전 시점</span>
+        <span class="li"><span class="ln" style="background:var(--accent)"></span>최근 시점(7월)</span>
+        <span class="li"><span class="sw" style="background:var(--surface-2);border:1px solid var(--border-strong)"></span>5월 이후 유지 범위</span>
+      </div>
+
+      <div class="dumbbell" style="margin-top:14px;">
+        <div class="db-row">
+          <div class="db-label"><div class="fn">리포트</div><div class="mo">4월→7월</div></div>
+          <div class="db-track">
+            <div class="db-line" style="left:41%; width:49%;"></div>
+            <div class="db-dot from" style="left:90%;" title="4월 약 90%"></div>
+            <div class="db-dot crit" style="left:41%;" title="7월 약 41%"></div>
+          </div>
+        </div>
+        <div class="db-row">
+          <div class="db-label"><div class="fn">정규반</div><div class="mo">4월→7월</div></div>
+          <div class="db-track">
+            <div class="db-line" style="left:78%; width:18%;"></div>
+            <div class="db-dot from" style="left:96%;" title="4월 약 96%"></div>
+            <div class="db-dot to" style="left:78%;" title="7월 약 78%"></div>
+          </div>
+        </div>
+        <div class="db-row">
+          <div class="db-label"><div class="fn">Learning</div><div class="mo">5월→7월</div></div>
+          <div class="db-track">
+            <div class="db-line" style="left:75%; width:15%;"></div>
+            <div class="db-dot from" style="left:75%;" title="5월 약 75%(저점)"></div>
+            <div class="db-dot to" style="left:90%;" title="7월 약 90%(회복)"></div>
+          </div>
+        </div>
+        <div class="db-row">
+          <div class="db-label"><div class="fn">Knock</div><div class="mo">5월 이후</div></div>
+          <div class="db-track">
+            <div class="db-band" style="left:50%; width:11%;" title="5월 이후 50~61% 유지"></div>
+          </div>
+        </div>
+        <div class="db-row">
+          <div class="db-label"><div class="fn">커뮤니티</div><div class="mo">5월 이후</div></div>
+          <div class="db-track">
+            <div class="db-band" style="left:76%; width:6%;" title="5월 이후 76~82% 유지"></div>
+          </div>
+        </div>
+      </div>
+      <div class="axis-ticks">
+        <div></div>
+        <div class="tk-row"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+      </div>
+
+      <details class="tbl-toggle">
+        <summary>표로 보기</summary>
+        <div class="data-table">
+          <table>
+            <thead><tr><th>기능</th><th>이전 시점</th><th>최근 시점</th><th>변화</th></tr></thead>
+            <tbody>
+              <tr><td>리포트</td><td>4월 약 90%</td><td>7월 약 41%</td><td>▼49%p</td></tr>
+              <tr><td>정규반</td><td>4월 약 96%</td><td>7월 약 78%</td><td>▼18%p</td></tr>
+              <tr><td>Learning</td><td>5월 약 75%</td><td>7월 약 90%</td><td>▲15%p(회복)</td></tr>
+              <tr><td>Knock</td><td colspan="2">5월 이후 50~61% 범위 유지</td><td>—</td></tr>
+              <tr><td>커뮤니티</td><td colspan="2">5월 이후 76~82% 범위 유지</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>월별 세션 수 구간별 사용자 구성</h3>
+        <span class="card-cap">각 월 전체 활동 사용자 중 비중, 100% 기준</span>
+      </div>
+      <div class="legend">
+        <span class="li"><span class="sw" style="background:var(--series-1)"></span>월 1회</span>
+        <span class="li"><span class="sw" style="background:var(--series-2)"></span>월 2~3회</span>
+        <span class="li"><span class="sw" style="background:var(--series-3)"></span>월 4~9회</span>
+        <span class="li"><span class="sw" style="background:var(--series-4)"></span>월 10회 이상</span>
+      </div>
+      <div class="stack-chart" style="margin-top:14px;">
+        <div class="stack-row">
+          <div class="mo-lbl">4월</div>
+          <div class="stack-bar">
+            <div class="stack-seg" style="flex:31.7; background:var(--series-1)" title="1회 31.7%"><span class="seg-label">31.7%</span></div>
+            <div class="stack-seg" style="flex:28.0; background:var(--series-2)" title="2~3회 28.0%"><span class="seg-label">28.0%</span></div>
+            <div class="stack-seg" style="flex:26.4; background:var(--series-3)" title="4~9회 26.4%"><span class="seg-label">26.4%</span></div>
+            <div class="stack-seg" style="flex:13.9; background:var(--series-4)" title="10회+ 13.9%"><span class="seg-label">13.9%</span></div>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="mo-lbl">5월</div>
+          <div class="stack-bar">
+            <div class="stack-seg" style="flex:17.5; background:var(--series-1)" title="1회 17.5%"><span class="seg-label">17.5%</span></div>
+            <div class="stack-seg" style="flex:13.9; background:var(--series-2)" title="2~3회 13.9%"><span class="seg-label">13.9%</span></div>
+            <div class="stack-seg" style="flex:20.6; background:var(--series-3)" title="4~9회 20.6%"><span class="seg-label">20.6%</span></div>
+            <div class="stack-seg" style="flex:47.9; background:var(--series-4)" title="10회+ 47.9%"><span class="seg-label">47.9%</span></div>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="mo-lbl">6월</div>
+          <div class="stack-bar">
+            <div class="stack-seg" style="flex:32.5; background:var(--series-1)" title="1회 32.5%"><span class="seg-label">32.5%</span></div>
+            <div class="stack-seg" style="flex:29.7; background:var(--series-2)" title="2~3회 29.7%"><span class="seg-label">29.7%</span></div>
+            <div class="stack-seg" style="flex:27.3; background:var(--series-3)" title="4~9회 27.3%"><span class="seg-label">27.3%</span></div>
+            <div class="stack-seg" style="flex:10.5; background:var(--series-4)" title="10회+ 10.5%"><span class="seg-label">10.5%</span></div>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="mo-lbl">7월</div>
+          <div class="stack-bar">
+            <div class="stack-seg" style="flex:28.6; background:var(--series-1)" title="1회 28.6%"><span class="seg-label">28.6%</span></div>
+            <div class="stack-seg" style="flex:22.9; background:var(--series-2)" title="2~3회 22.9%"><span class="seg-label">22.9%</span></div>
+            <div class="stack-seg" style="flex:24.5; background:var(--series-3)" title="4~9회 24.5%"><span class="seg-label">24.5%</span></div>
+            <div class="stack-seg" style="flex:24.0; background:var(--series-4)" title="10회+ 24.0%"><span class="seg-label">24.0%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <details class="tbl-toggle">
+        <summary>표로 보기</summary>
+        <div class="data-table">
+          <table>
+            <thead><tr><th>월</th><th>1회</th><th>2~3회</th><th>4~9회</th><th>10회 이상</th></tr></thead>
+            <tbody>
+              <tr><td>4월</td><td>31.7%</td><td>28.0%</td><td>26.4%</td><td>13.9%</td></tr>
+              <tr><td>5월</td><td>17.5%</td><td>13.9%</td><td>20.6%</td><td>47.9%</td></tr>
+              <tr><td>6월</td><td>32.5%</td><td>29.7%</td><td>27.3%</td><td>10.5%</td></tr>
+              <tr><td>7월</td><td>28.6%</td><td>22.9%</td><td>24.5%</td><td>24.0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>월별 사용자 1인당 참여 시간 · 세션 수</h3>
+        <span class="card-cap">평균 vs 중앙값 비교</span>
+      </div>
+      <div class="legend">
+        <span class="li"><span class="ln" style="background:var(--series-1)"></span>평균</span>
+        <span class="li"><span class="ln" style="background:var(--series-2)"></span>중앙값</span>
+      </div>
+      <div class="line-grid" style="margin-top:14px;">
+        <div>
+          <div class="line-chart-title">월 누적 참여 시간(분)</div>
+          <div class="line-svg-wrap" id="chart-engage"></div>
+        </div>
+        <div>
+          <div class="line-chart-title">월 세션 수(회)</div>
+          <div class="line-svg-wrap" id="chart-session"></div>
+        </div>
+      </div>
+      <details class="tbl-toggle">
+        <summary>표로 보기</summary>
+        <div class="data-table">
+          <table>
+            <thead><tr><th>월</th><th>평균 참여시간(분)</th><th>중앙 참여시간(분)</th><th>평균 세션수(회)</th><th>중앙 세션수(회)</th></tr></thead>
+            <tbody>
+              <tr><td>4월</td><td>7.30</td><td>2.81</td><td>4.84</td><td>3</td></tr>
+              <tr><td>5월</td><td>14.42</td><td>7.33</td><td>12.04</td><td>9</td></tr>
+              <tr><td>6월</td><td>7.31</td><td>2.87</td><td>4.41</td><td>2</td></tr>
+              <tr><td>7월</td><td>12.51</td><td>5.53</td><td>7.38</td><td>3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>자동 넛지 규칙 · 운영 현황</h3></div>
+      <div class="rule-list">
+        <div class="rule-row">
+          <div class="rn">①</div>
+          <div class="rt"><b>이탈 감지 카드</b> — 리포트/Knock 진입, 10초 내 참여 부족 시 하이라이트 카드 노출</div>
+          <div class="toggle-lbl">활성</div>
+          <div class="toggle"></div>
+        </div>
+        <div class="rule-row">
+          <div class="rn">②</div>
+          <div class="rt"><b>저빈도 리마인더</b> — 월초 로그인 & 직전월 세션 1회 → 개인화 알림 1회 발송</div>
+          <div class="toggle-lbl">활성</div>
+          <div class="toggle"></div>
+        </div>
+        <div class="rule-row">
+          <div class="rn">③</div>
+          <div class="rt"><b>참여율 급락 경고</b> — 기능 참여율 전월 대비 10%p 이상 하락 시 대시보드 경고 표시</div>
+          <div class="toggle-lbl">활성</div>
+          <div class="toggle"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-note">
+      회원 구성·참여율·세션 구간 수치는 「BDAI_LMS_활성화_아이디어톤_데이터_참고자료.pdf」 기준입니다. 로그인 리마인더 화면의 '지난달 세션 수·참여 시간'만 세그먼트 A 예시 사용자를 위한 예시 값이며, 그 외 모든 수치는 실측값입니다.
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- tabs ----
+  var tabs = document.querySelectorAll('.tab');
+  var views = { report: document.getElementById('view-report'), login: document.getElementById('view-login'), dashboard: document.getElementById('view-dashboard') };
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
+      t.setAttribute('aria-selected', 'true');
+      Object.keys(views).forEach(function (k) { views[k].classList.remove('active'); });
+      views[t.dataset.view].classList.add('active');
+    });
+  });
+
+  // ---- report simulation ----
+  var fill = document.getElementById('sim-fill');
+  var status = document.getElementById('sim-status');
+  var card = document.getElementById('nudge-card');
+  var replay = document.getElementById('sim-replay');
+  var simTimer1, simTimer2;
+
+  function runSim() {
+    clearTimeout(simTimer1); clearTimeout(simTimer2);
+    card.classList.remove('show');
+    status.textContent = '시뮬레이션 · page_view 발생 → 10초 경과 대기 중';
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    if (reduceMotion) {
+      fill.style.width = '100%';
+      status.textContent = '감지 완료 · 참여 부족 → 카드 노출';
+      card.classList.add('show');
+      return;
+    }
+    requestAnimationFrame(function () {
+      fill.style.transition = 'width 3s linear';
+      fill.style.width = '100%';
+    });
+    simTimer1 = setTimeout(function () {
+      status.textContent = '감지 완료 · 참여 부족 → 카드 노출';
+      card.classList.add('show');
+    }, 3000);
+  }
+  replay.addEventListener('click', runSim);
+  runSim();
+
+  // ---- login modal ----
+  var loginBtn = document.getElementById('login-btn');
+  var overlay = document.getElementById('modal-overlay');
+  var modalConfirm = document.getElementById('modal-confirm');
+  var modalDismiss = document.getElementById('modal-dismiss');
+  function openModal() { overlay.classList.add('show'); }
+  function closeModal() { overlay.classList.remove('show'); }
+  loginBtn.addEventListener('click', openModal);
+  modalConfirm.addEventListener('click', closeModal);
+  modalDismiss.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+
+  // ---- line charts ----
+  function buildLineChart(hostId, months, seriesA, seriesB, unit) {
+    var host = document.getElementById(hostId);
+    var w = 260, h = 130, padL = 8, padR = 8, padT = 10, padB = 20;
+    var all = seriesA.concat(seriesB);
+    var min = Math.min.apply(null, all), max = Math.max.apply(null, all);
+    var range = max - min || 1;
+    min -= range * 0.12; max += range * 0.12;
+    var innerW = w - padL - padR, innerH = h - padT - padB;
+    function x(i) { return padL + (innerW * i) / (months.length - 1); }
+    function y(v) { return padT + innerH - ((v - min) / (max - min)) * innerH; }
+
+    var css = getComputedStyle(document.documentElement);
+    var c1 = css.getPropertyValue('--series-1').trim();
+    var c2 = css.getPropertyValue('--series-2').trim();
+    var grid = css.getPropertyValue('--grid').trim();
+    var muted = css.getPropertyValue('--text-muted').trim();
+    var primary = css.getPropertyValue('--text-primary').trim();
+
+    var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + hostId + ' line chart">';
+
+    // gridlines (horizontal, recessive)
+    [0, 0.5, 1].forEach(function (f) {
+      var gy = padT + innerH * f;
+      svg += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (w - padR) + '" y2="' + gy + '" stroke="' + grid + '" stroke-width="1"/>';
+    });
+
+    function path(series, color) {
+      var d = series.map(function (v, i) { return (i === 0 ? 'M' : 'L') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' ');
+      var s = '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+      series.forEach(function (v, i) {
+        s += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="3" fill="' + color + '"><title>' + months[i] + ' ' + v + unit + '</title></circle>';
+      });
+      var lastI = series.length - 1;
+      s += '<text x="' + (x(lastI) - 2).toFixed(1) + '" y="' + (y(series[lastI]) - 8).toFixed(1) + '" font-size="9" text-anchor="end" fill="' + color + '" font-weight="700">' + series[lastI] + '</text>';
+      return s;
+    }
+    svg += path(seriesA, c1);
+    svg += path(seriesB, c2);
+
+    months.forEach(function (m, i) {
+      svg += '<text x="' + x(i).toFixed(1) + '" y="' + (h - 4) + '" font-size="9.5" text-anchor="middle" fill="' + muted + '">' + m + '</text>';
+    });
+
+    svg += '</svg>';
+    host.innerHTML = svg;
+  }
+
+  function renderCharts() {
+    buildLineChart('chart-engage', ['4월', '5월', '6월', '7월'], [7.30, 14.42, 7.31, 12.51], [2.81, 7.33, 2.87, 5.53], '분');
+    buildLineChart('chart-session', ['4월', '5월', '6월', '7월'], [4.84, 12.04, 4.41, 7.38], [3, 9, 2, 3], '회');
+  }
+  renderCharts();
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', renderCharts);
+})();
+</script>
+</body>
+</html>
